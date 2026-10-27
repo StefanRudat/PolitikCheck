@@ -25,3 +25,11 @@ Die App kommuniziert nur mit dem lokalen Ollama-Dienst unter `127.0.0.1`. Kommen
 ## Firefox-Helfer für Facebook
 
 Die Erweiterung im Ordner [`firefox-helper`](firefox-helper/README.md) kann markierte Facebook-Kommentare per Kontextmenü an PolitikCheck übergeben. Der Import startet die lokale Prüfung automatisch. Sie liest keine Timeline und verwendet nur den vom Benutzer ausgewählten Text.
+
+## Windows-Version
+
+Eine eigenständige WinForms-Version für Windows 10/11 (64 Bit) liegt unter [`windows`](windows/). Sie verwendet ebenfalls Ollama und Gemma 3 4B lokal und unterstützt die Übergabe über den Firefox-Helfer. Installation und Build sind in [`INSTALLATION_WINDOWS.md`](INSTALLATION_WINDOWS.md) beschrieben.
+
+**Wichtig:** Die Windows-Version wurde vom Projektteam noch nicht auf einem Windows-PC gebaut oder praktisch überprüft. Sie wird ausdrücklich als **nicht überprüft** bereitgestellt. Bitte die Installationsanleitung und den Prüfstatus beachten.
+
+Für eine technische Weitergabe an eine andere KI gibt es [`HANDOFF_FOR_AI.md`](HANDOFF_FOR_AI.md).

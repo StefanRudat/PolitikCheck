@@ -7,3 +7,8 @@ build/
 DerivedData/
 *.xcuserstate
 xcuserdata/
+
+# Windows build output
+windows/bin/
+windows/obj/
+windows/publish/
