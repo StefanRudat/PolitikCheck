@@ -1,0 +1,9 @@
+# macOS Finder and local build output
+.DS_Store
+build/
+.module-cache/
+
+# Xcode / Swift local state
+DerivedData/
+*.xcuserstate
+xcuserdata/

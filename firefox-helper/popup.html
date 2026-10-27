@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PolitikCheck</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main>
+    <h1>PolitikCheck</h1>
+    <p class="intro">Markiere einen Facebook-Kommentar und übernimm ihn hier.</p>
+    <button id="capture" class="secondary">Markierung aus Facebook übernehmen</button>
+    <label for="comment">Kommentar</label>
+    <textarea id="comment" rows="8" placeholder="Markierten Kommentar hier prüfen"></textarea>
+    <p id="status" role="status" aria-live="polite"></p>
+    <button id="send" class="primary">In PolitikCheck öffnen</button>
+    <p class="privacy">Der Helfer liest nur deine Markierung. Die KI-Verarbeitung bleibt lokal in Ollama.</p>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>

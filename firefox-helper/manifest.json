@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+  "name": "PolitikCheck – Facebook-Helfer",
+  "version": "1.0.1",
+  "description": "Übergibt markierte Facebook-Kommentare an die lokale PolitikCheck-App.",
+  "permissions": ["activeTab", "contextMenus", "storage"],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "browser_action": {
+    "default_title": "Kommentar an PolitikCheck",
+    "default_popup": "popup.html"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "politikcheck-helper@local.app",
+      "strict_min_version": "115.0"
+    }
+  }
+}
