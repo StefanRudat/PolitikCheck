@@ -12,3 +12,7 @@ xcuserdata/
 windows/bin/
 windows/obj/
 windows/publish/
+
+# Linux Python cache
+__pycache__/
+*.py[cod]

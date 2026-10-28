@@ -54,6 +54,8 @@ Die Windows-Version und diese Installationsschritte wurden vom Projektteam noch 
 2. PolitikCheck über das Startmenü starten. Falls Ollama bereits läuft und das Modell vorhanden ist, zeigt die App den Status **Bereit**.
 3. Kommentar einfügen und **Gegendarstellung erstellen** wählen. Die Antwort wird automatisch in die Zwischenablage kopiert. Im Facebook-Antwortfeld mit Rechtsklick **Einfügen** wählen.
 
+Antwortlänge und eigenen Prompt kannst du in **Antwort anpassen** einstellen. Die Werte werden lokal in `%APPDATA%\PolitikCheck\settings.json` gespeichert. Öffnet der Firefox-Helfer mehrere Kommentare, soll die bestehende PolitikCheck-Instanz das Fenster wiederverwenden.
+
 ## Firefox-Helfer optional einrichten
 
 Die Erweiterung liegt in `firefox-helper`. In Firefox `about:debugging#/runtime/this-firefox` öffnen und unter **Dieses Firefox** auf **Temporäres Add-on laden…** klicken. Die Datei `PolitikCheck-Firefox-Helfer.xpi` aus dem Projektordner wählen. Danach auf Facebook einen Kommentar markieren und per Rechtsklick **Für PolitikCheck übernehmen** wählen. Firefox fragt beim ersten Öffnen gegebenenfalls, ob es die externe App starten darf.

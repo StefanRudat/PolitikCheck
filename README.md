@@ -1,8 +1,20 @@
-# PolitikCheck für macOS
+# PolitikCheck
 
-Eine SwiftUI-App für kurze, sachliche Gegendarstellungen. Die Textgenerierung läuft mit Ollama und Gemma 3 4B lokal auf dem Mac. Es ist kein API-Schlüssel und kein kostenpflichtiger Cloud-Dienst nötig.
+PolitikCheck ist eine quelloffene Anwendung, die kurze, sachliche Gegendarstellungen zu politischen Kommentaren unterstützt. Die Textgenerierung läuft lokal mit Ollama und Gemma 3 4B – ohne API-Schlüssel und ohne laufende Gebühren für einen Cloud-KI-Dienst.
 
-## Voraussetzungen und erster Start
+PolitikCheck soll einen respektvollen und faktenorientierten Austausch fördern. Der Anspruch ist, politische Argumente unabhängig von Partei oder Richtung nach denselben Maßstäben zu beurteilen. Als inhaltliche und ethische Orientierung dienen die Grundrechte und rechtsstaatlichen Prinzipien des Grundgesetzes für die Bundesrepublik Deutschland vom 23. Mai 1949 sowie die freiheitlich-demokratische Grundordnung.
+
+Die Anwendung hat keinen Zugriff auf eine Live-Websuche. KI-Antworten können Fehler enthalten und ersetzen keine Prüfung aktueller Tatsachen anhand verlässlicher Quellen.
+
+## Plattformen
+
+- **macOS:** native SwiftUI-App, gebaut mit `./build.sh`.
+- **Windows:** WinForms-App für .NET 10, Quellcode und Anleitung unter [`windows`](windows/) und [`INSTALLATION_WINDOWS.md`](INSTALLATION_WINDOWS.md). Die Windows-Version ist noch nicht auf Windows überprüft.
+- **Linux:** Python-App mit Tkinter, Anleitung unter [`linux/README.md`](linux/README.md). Die Linux-Version ist noch nicht auf Linux überprüft.
+
+Alle Plattformen verwenden denselben lokalen Ollama-Dienst und dasselbe Modell. Die Antwortlänge ist über einen Regler von 0 (sehr kurz) bis 100 (länger) einstellbar. Ein eigener Prompt kann als zusätzliche Vorgabe gespeichert werden. Diese Einstellungen bleiben lokal auf dem jeweiligen Gerät.
+
+## macOS: Installation und erster Start
 
 - macOS 14 Sonoma oder neuer
 - Ollama für macOS: [ollama.com/download/mac](https://ollama.com/download/mac)
@@ -10,26 +22,19 @@ Eine SwiftUI-App für kurze, sachliche Gegendarstellungen. Die Textgenerierung l
 
 Ollama installieren und starten. Dann PolitikCheck öffnen und **Status prüfen** wählen. Sobald Ollama erreichbar ist, in der App **Modell herunterladen** klicken. Das Modell bleibt danach lokal verfügbar.
 
-## Bauen
+## macOS: Bauen
 
 Mit Xcode Command Line Tools (`xcode-select --install`):
 
 ```bash
-cd politik-check
 ./build.sh
 open "build/PolitikCheck.app"
 ```
 
-Die App kommuniziert nur mit dem lokalen Ollama-Dienst unter `127.0.0.1`. Kommentare werden nicht an einen KI-Anbieter übertragen. Fertige Antworten werden automatisch in die macOS-Zwischenablage kopiert und können im Facebook-Antwortfeld über Rechtsklick → **Einfügen** eingefügt werden. Die lokale Generierung bietet keine Live-Websuche und kann aktuelle Tatsachen nicht selbst überprüfen; aktuelle oder strittige Aussagen bitte anhand verlässlicher Quellen prüfen.
-
 ## Firefox-Helfer für Facebook
 
-Die Erweiterung im Ordner [`firefox-helper`](firefox-helper/README.md) kann markierte Facebook-Kommentare per Kontextmenü an PolitikCheck übergeben. Der Import startet die lokale Prüfung automatisch. Sie liest keine Timeline und verwendet nur den vom Benutzer ausgewählten Text.
+Die Erweiterung im Ordner [`firefox-helper`](firefox-helper/README.md) übernimmt nur ausdrücklich markierte Facebook-Kommentare. Sie liest keine Timeline. Die Übergabe erfolgt über `politikcheck://`; Antwortgenerierung und Zwischenablage bleiben lokal. Der Helfer muss in Firefox als temporäres Add-on geladen werden und nach einem Firefox-Neustart erneut geladen werden. Hinweise stehen unter [Fehlerbehebung](firefox-helper/README.md#fehlerbehebung).
 
-## Windows-Version
+## Technische Übergabe
 
-Eine eigenständige WinForms-Version für Windows 10/11 (64 Bit) liegt unter [`windows`](windows/). Sie verwendet ebenfalls Ollama und Gemma 3 4B lokal und unterstützt die Übergabe über den Firefox-Helfer. Installation und Build sind in [`INSTALLATION_WINDOWS.md`](INSTALLATION_WINDOWS.md) beschrieben.
-
-**Wichtig:** Die Windows-Version wurde vom Projektteam noch nicht auf einem Windows-PC gebaut oder praktisch überprüft. Sie wird ausdrücklich als **nicht überprüft** bereitgestellt. Bitte die Installationsanleitung und den Prüfstatus beachten.
-
-Für eine technische Weitergabe an eine andere KI gibt es [`HANDOFF_FOR_AI.md`](HANDOFF_FOR_AI.md).
+Für die Fortsetzung des Projekts durch eine andere Person oder KI gibt es [`HANDOFF_FOR_AI.md`](HANDOFF_FOR_AI.md). Darin stehen Architektur, Prüfstatus und offene Schritte.
