@@ -7,21 +7,20 @@ Die Windows-Version und diese Installationsschritte wurden vom Projektteam noch 
 ## Voraussetzungen
 
 - Windows 10 oder Windows 11, 64 Bit.
-- Ollama für Windows: [ollama.com/download/windows](https://ollama.com/download/windows).
 - .NET 10 SDK zum Bauen der Anwendung: [Microsoft .NET Downloads](https://dotnet.microsoft.com/download/dotnet/10.0).
 - Firefox für die Browser-Erweiterung, optional.
-- Rund 3,4 GB freier Speicherplatz für das Gemma-3-4B-Modell, zusätzlich zum Speicher für Ollama und die Anwendung.
+- Für lokale Nutzung: Ollama für Windows ([ollama.com/download/windows](https://ollama.com/download/windows)) und rund 3,4 GB Speicherplatz für Gemma 3 4B.
 
 ## 1. Ollama und das Modell installieren
 
-1. Ollama von der offiziellen Download-Seite installieren und starten.
+1. Nur für lokale Nutzung: Ollama von der offiziellen Download-Seite installieren und starten.
 2. PowerShell öffnen und das Modell einmalig laden:
 
    ```powershell
    ollama pull gemma3:4b
    ```
 
-   Der erste Download benötigt eine Internetverbindung. Danach bleibt das Modell lokal gespeichert. Ollama stellt der App die lokale API unter `http://127.0.0.1:11434` bereit.
+   Der erste Download benötigt eine Internetverbindung. Danach bleibt das Modell lokal gespeichert. Ollama stellt der App die lokale API unter `http://127.0.0.1:11434` bereit. Für ausschließliche OpenRouter-Nutzung kannst du diesen Schritt überspringen.
 
 ## 2. PolitikCheck herunterladen und bauen
 
@@ -54,7 +53,7 @@ Die Windows-Version und diese Installationsschritte wurden vom Projektteam noch 
 2. PolitikCheck über das Startmenü starten. Falls Ollama bereits läuft und das Modell vorhanden ist, zeigt die App den Status **Bereit**.
 3. Kommentar einfügen und **Gegendarstellung erstellen** wählen. Die Antwort wird automatisch in die Zwischenablage kopiert. Im Facebook-Antwortfeld mit Rechtsklick **Einfügen** wählen.
 
-Antwortlänge und eigenen Prompt kannst du in **Antwort anpassen** einstellen. Die Werte werden lokal in `%APPDATA%\PolitikCheck\settings.json` gespeichert. Öffnet der Firefox-Helfer mehrere Kommentare, soll die bestehende PolitikCheck-Instanz das Fenster wiederverwenden.
+Im Auswahlfeld **KI-Quelle** wechselst du zwischen der lokalen Ollama-KI und OpenRouter. Für OpenRouter wird ein eigener API-Schlüssel benötigt; erstelle ihn über den Link in der App. Standardmäßig ist `openrouter/free` ausgewählt. Die Verfügbarkeit kostenloser Modelle und die Limits können sich ändern. Der Schlüssel wird mit Windows DPAPI für dein Windows-Benutzerkonto verschlüsselt in `%APPDATA%\PolitikCheck\settings.json` abgelegt. Antwortlänge und beide Prompts werden ebenfalls dort gespeichert. Der externe Prompt ist mit einem Counter-Speech-Prompt vorausgefüllt und lässt sich bearbeiten.
 
 ## Firefox-Helfer optional einrichten
 
@@ -68,4 +67,4 @@ Im Ordner `windows` das Skript `Uninstall.ps1` ausführen. Es entfernt die App, 
 
 ## Datenschutz und Grenzen
 
-Die App sendet den eingegebenen Kommentar an den lokalen Ollama-Dienst auf demselben PC. Sie verwendet keinen Cloud-KI-Anbieter und hat keine Live-Websuche. Aktuelle Tatsachenbehauptungen müssen vor dem Veröffentlichen anhand verlässlicher Quellen geprüft werden. Das Modell kann Fehler machen.
+Bei lokaler Auswahl sendet die App den Kommentar an Ollama auf demselben PC. Bei OpenRouter-Auswahl werden Kommentar und Prompt an OpenRouter und den jeweils verwendeten Modellanbieter übertragen. Prüfe deren aktuelle Datenschutz- und Nutzungsbedingungen und verwende keine vertraulichen Inhalte. Die App hat keine Live-Websuche. Aktuelle Tatsachenbehauptungen müssen vor dem Veröffentlichen anhand verlässlicher Quellen geprüft werden. Das Modell kann Fehler machen.

@@ -8,8 +8,7 @@ Die Linux-Version wurde vom Projektteam noch nicht auf einem Linux-System instal
 
 - Eine aktuelle 64-Bit-Linux-Distribution mit grafischer Desktop-Umgebung.
 - Python 3 und Tkinter. Unter Ubuntu oder Debian: `sudo apt install python3 python3-tk xdg-utils`.
-- Ollama für Linux: [ollama.com/download/linux](https://ollama.com/download/linux).
-- Rund 3,4 GB freier Speicherplatz für Gemma 3 4B, zusätzlich zu Ollama und der App.
+- Für lokale Nutzung: Ollama für Linux ([ollama.com/download/linux](https://ollama.com/download/linux)) und rund 3,4 GB Speicherplatz für Gemma 3 4B.
 
 ## Installation
 
@@ -20,11 +19,13 @@ Die Linux-Version wurde vom Projektteam noch nicht auf einem Linux-System instal
    cd PolitikCheck
    ```
 
-2. Ollama installieren und starten. Das Modell einmalig herunterladen:
+2. Nur für lokale Nutzung: Ollama installieren und starten. Das Modell einmalig herunterladen:
 
    ```bash
    ollama pull gemma3:4b
    ```
+
+   Wenn du OpenRouter verwenden möchtest, kannst du diesen Schritt überspringen und stattdessen in der App den API-Schlüssel eintragen.
 
 3. PolitikCheck installieren:
 
@@ -36,7 +37,11 @@ Die Linux-Version wurde vom Projektteam noch nicht auf einem Linux-System instal
 
 4. PolitikCheck im Anwendungsmenü öffnen. Kommentare können eingefügt oder auf Facebook markiert und über den Firefox-Helfer übergeben werden. Antworten werden automatisch in die Zwischenablage kopiert.
 
-Die Antwortlänge lässt sich über den Regler von 0 (sehr kurz) bis 100 (länger) anpassen. Eigene Prompts werden als zusätzliche Vorgabe gespeichert. Die Einstellungen liegen unter `~/.config/politikcheck/settings.json` (oder unter dem Pfad aus `XDG_CONFIG_HOME`).
+Über **KI-Quelle** wechselst du zwischen Ollama lokal und OpenRouter extern. OpenRouter braucht einen API-Schlüssel; du kannst ihn über den Link in der App erstellen. Voreingestellt ist `openrouter/free`. Kostenlose Modelle haben Limits und können wechseln oder zeitweise ausfallen; aktuell nennt OpenRouter 50 kostenlose Anfragen pro Tag und 20 pro Minute.
+
+Der externe Prompt ist mit dem Projekt-Prompt für demokratische Gegenrede vorausgefüllt und lässt sich ändern. Antwortlänge, Quelle, Prompts und Schlüssel werden unter `~/.config/politikcheck/settings.json` gespeichert (oder unter dem Pfad aus `XDG_CONFIG_HOME`). Die Datei wird mit Dateirechten 0600 angelegt und ist damit nur für den aktuellen Benutzer lesbar. Der API-Schlüssel ist dort nicht verschlüsselt.
+
+Bei OpenRouter-Auswahl werden Kommentar und Prompt über OpenRouter an den jeweiligen Modellanbieter übertragen. Prüfe dessen Datenschutzbedingungen und gib keine vertraulichen Inhalte ein. Bei lokaler Auswahl wird der Kommentar an Ollama auf demselben PC gesendet.
 
 ## Deinstallation
 
