@@ -108,15 +108,9 @@ class PolitikCheckApp:
         self.busy = False
         self.running = True
 
-        self.comment = tk.Text(root, height=7, wrap="word", undo=True)
-        self.answer = tk.Text(root, height=7, wrap="word", state="disabled")
         self.status = tk.StringVar(value="Prüfe Verbindung zu Ollama …")
         self.length_value = tk.DoubleVar(value=self.settings["answer_length"])
         self.length_label = tk.StringVar()
-        self.custom_prompt = tk.Text(root, height=4, wrap="word", undo=True)
-        self.custom_prompt.insert("1.0", self.settings["custom_prompt"])
-        self.external_prompt = tk.Text(root, height=5, wrap="word", undo=True)
-        self.external_prompt.insert("1.0", self.settings["openrouter_prompt"])
         self.api_key = tk.StringVar(value=self.settings["openrouter_api_key"])
         self.provider = tk.StringVar(value=self.settings["provider"])
         self.provider_display = tk.StringVar(value="OpenRouter (extern)" if self.provider.get() == "openrouter" else "Lokal mit Ollama")
@@ -162,7 +156,9 @@ class PolitikCheckApp:
         self.api_key_entry.pack(side="left", fill="x", expand=True, padx=8)
         ttk.Button(key_row, text="Schlüssel erstellen", command=lambda: webbrowser.open("https://openrouter.ai/keys")).pack(side="right")
         ttk.Label(self.external, text="Veränderbarer externer Prompt").pack(anchor="w", pady=(4, 3))
-        self.external_prompt.pack(in_=self.external, fill="x", expand=True)
+        self.external_prompt = tk.Text(self.external, height=5, wrap="word", undo=True)
+        self.external_prompt.insert("1.0", self.settings["openrouter_prompt"])
+        self.external_prompt.pack(fill="x", expand=True)
         self.api_key.trace_add("write", lambda *_args: self.on_api_key_change())
         self.external_prompt.bind("<KeyRelease>", lambda _event: self.save_settings())
 
@@ -177,19 +173,21 @@ class PolitikCheckApp:
         self.on_length_change()
         self.local_prompt_label = ttk.Label(settings, text="Eigener Prompt (wird zusätzlich verwendet und lokal gespeichert)")
         self.local_prompt_label.pack(anchor="w", pady=(7, 3))
-        self.custom_prompt.pack(in_=settings, fill="x", expand=True)
+        self.custom_prompt = tk.Text(settings, height=4, wrap="word", undo=True)
+        self.custom_prompt.insert("1.0", self.settings["custom_prompt"])
+        self.custom_prompt.pack(fill="x", expand=True)
         self.custom_prompt.bind("<KeyRelease>", lambda _event: self.save_settings())
 
         comment_frame = ttk.LabelFrame(outer, text="Kommentar prüfen", padding=7)
         comment_frame.pack(fill="both", expand=True, pady=(0, 5))
-        self.add_scrollable_text(comment_frame, self.comment)
+        self.comment = self.add_scrollable_text(comment_frame, height=7, wrap="word", undo=True)
 
         self.generate_button = ttk.Button(outer, text="Gegendarstellung erstellen", command=self.generate, state="disabled")
         self.generate_button.pack(anchor="e", pady=(0, 7))
 
         answer_frame = ttk.LabelFrame(outer, text="Antwort", padding=7)
         answer_frame.pack(fill="both", expand=True, pady=(0, 7))
-        self.add_scrollable_text(answer_frame, self.answer)
+        self.answer = self.add_scrollable_text(answer_frame, height=7, wrap="word", state="disabled")
         self.copy_button = ttk.Button(answer_frame, text="Kopieren", command=self.copy_answer, state="disabled")
         self.copy_button.pack(anchor="e", pady=(5, 0))
 
@@ -218,9 +216,11 @@ class PolitikCheckApp:
             self.local_prompt_label.pack(anchor="w", pady=(7, 3))
             self.custom_prompt.pack(in_=self.local_prompt_label.master, fill="x", expand=True)
         self.generate_button.configure(state="normal" if self.can_generate() else "disabled")
-        if self.pending_auto_generate and self.can_generate():
+        if self.pending_auto_generate and self.can_generate() and self.comment.get("1.0", "end-1c").strip():
             self.pending_auto_generate = False
             self.generate()
+        elif self.pending_auto_generate and provider == "openrouter" and not self.can_generate():
+            self.pending_auto_generate = False
 
     def on_api_key_change(self):
         self.save_settings()
@@ -231,13 +231,15 @@ class PolitikCheckApp:
         return bool(self.api_key.get().strip()) if self.provider.get() == "openrouter" else self.model_ready
 
     @staticmethod
-    def add_scrollable_text(parent, text_widget):
+    def add_scrollable_text(parent, **text_options):
         frame = ttk.Frame(parent)
         frame.pack(fill="both", expand=True)
+        text_widget = tk.Text(frame, **text_options)
         scrollbar = ttk.Scrollbar(frame, orient="vertical", command=text_widget.yview)
         text_widget.configure(yscrollcommand=scrollbar.set)
         text_widget.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
+        return text_widget
 
     def on_length_change(self, _value=None):
         value = int(round(float(self.length_value.get())))
@@ -401,9 +403,12 @@ class PolitikCheckApp:
                     self.generate_button.configure(state="normal" if self.can_generate() and not self.busy else "disabled")
                     if self.provider.get() == "openrouter":
                         self.status.set("OpenRouter ausgewählt. Kommentar wird extern verarbeitet.")
-                        if self.pending_auto_generate and self.can_generate():
+                        if self.pending_auto_generate:
                             self.pending_auto_generate = False
-                            self.generate()
+                            if self.can_generate():
+                                self.generate()
+                            else:
+                                self.status.set("Bitte zuerst den OpenRouter-API-Schlüssel eintragen.")
                     elif not self.server_ready:
                         self.status.set("Ollama nicht erreichbar. Bitte Ollama installieren und starten.")
                     elif not self.model_ready:
