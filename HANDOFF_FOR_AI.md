@@ -26,6 +26,12 @@ Alle drei Oberflächen bieten einen Antwortlängen-Regler (0–100), einen Provi
 
 ## Bekannter Prüfstatus und nächste Schritte
 
+### macOS / OpenRouter
+
+Die macOS-App unterstützt OpenRouter über `https://openrouter.ai/api/v1/chat/completions` und verwendet standardmäßig `openrouter/free`. Der Schlüssel wird im macOS-Schlüsselbund gespeichert. Die OpenRouter-Ansicht zeigt jetzt während und nach einer Anfrage den Status sowie HTTP-Fehlermeldungen an; verschachtelte OpenRouter-Fehlerobjekte werden ausgelesen. Beim Wechsel zur externen KI wird außerdem ein passender Anfangsstatus gesetzt. Der veröffentlichte macOS-Build trägt Version 1.2, festgelegt in `Info.plist`.
+
+Beim Supportfall mit HTTP 401 „User not found“ bestätigte `GET https://openrouter.ai/api/v1/key` für den vom Nutzer verwendeten Schlüssel ein gültiges Konto und Freikontingent. Wenn das in der App weiter auftritt, den neuesten Build öffnen, den Schlüssel vollständig und ohne `Bearer` erneut eintragen und verifizieren, dass Keychain-Wert und API-Key identisch sind. Niemals den vollständigen Schlüssel in Logs, GitHub oder Chatverläufe aufnehmen.
+
 Die Windows-Version wurde auf dem Entwicklungsrechner nicht gebaut, nicht auf Windows ausgeführt und nicht mit Ollama oder Firefox praktisch geprüft. Die Linux-Version wurde ebenfalls nicht auf Linux installiert oder praktisch geprüft. Beide sind auf GitHub ausdrücklich als **nicht überprüft** gekennzeichnet. Behaupte nicht, dass sie funktionieren oder getestet wurden, bevor die jeweiligen Plattform-Prüfungen erfolgt sind.
 
 Vor einer Freigabe sollte eine andere KI oder ein Windows-Benutzer mindestens:

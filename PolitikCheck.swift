@@ -34,6 +34,11 @@ final class CheckModel: ObservableObject {
             generationTask = nil
             activeGenerationID = UUID()
             isWorking = false
+            if provider == "openrouter" {
+                status = openRouterKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                    ? "Bitte OpenRouter-API-Schlüssel eintragen."
+                    : "OpenRouter ausgewählt. Kommentar wird extern verarbeitet."
+            }
             if pendingAutoGenerate && activeProviderReady {
                 pendingAutoGenerate = false
                 generate()
@@ -182,7 +187,11 @@ final class CheckModel: ObservableObject {
                 if let error { self.status = "\(useOpenRouter ? "OpenRouter" : "Lokale") Anfrage fehlgeschlagen: \(error.localizedDescription)"; return }
                 guard let data, let http = response as? HTTPURLResponse else { self.status = "Keine gültige Antwort erhalten."; return }
                 guard (200..<300).contains(http.statusCode) else {
-                    let detail = (try? JSONSerialization.jsonObject(with: data) as? [String: Any])?["error"] as? String
+                    let responseObject = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+                    let errorValue = responseObject?["error"]
+                    let detail = errorValue as? String
+                        ?? (errorValue as? [String: Any])?["message"] as? String
+                        ?? responseObject?["message"] as? String
                     self.status = "\(useOpenRouter ? "OpenRouter" : "Ollama")-Fehler (\(http.statusCode)): \(detail ?? "Bitte Einstellungen prüfen.")"
                     return
                 }
@@ -284,6 +293,11 @@ struct ContentView: View {
                             .background(Color(nsColor: .textBackgroundColor)).clipShape(RoundedRectangle(cornerRadius: 6))
                             .overlay(RoundedRectangle(cornerRadius: 6).stroke(Color.secondary.opacity(0.25)))
                             .frame(height: 120)
+                        Text(model.status)
+                            .font(.caption)
+                            .foregroundStyle(model.status.contains("Fehler") || model.status.contains("fehlgeschlagen") ? .red : .secondary)
+                            .textSelection(.enabled)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }.padding(.top, 5)
                 }
             }

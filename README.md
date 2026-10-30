@@ -21,10 +21,28 @@ Antwortlänge (0–100), KI-Quelle und Prompts lassen sich in der App einstellen
 ## OpenRouter einrichten
 
 1. Unter [openrouter.ai/keys](https://openrouter.ai/keys) einen API-Schlüssel erstellen.
-2. In PolitikCheck **Extern mit OpenRouter** auswählen und den Schlüssel eintragen.
+2. In PolitikCheck **Extern mit OpenRouter** auswählen und den vollständigen Schlüssel eintragen. In das Feld gehört ausschließlich der Schlüssel (typischerweise beginnend mit `sk-or-v1-`), nicht `Bearer`, kein Beispielcode und keine Anführungszeichen. PolitikCheck setzt den `Bearer`-Header selbst.
 3. Den externen Prompt bei Bedarf im Textfeld anpassen. Als Modell wird `openrouter/free` verwendet.
 
 Kostenlose Modelle und deren Limits können sich ändern oder zeitweise nicht verfügbar sein. Die aktuelle Liste steht unter [OpenRouter Free Models](https://openrouter.ai/collections/free-models). Für jeden externen Aufruf ist eine Internetverbindung erforderlich. Der eingegebene Kommentar wird an OpenRouter und den jeweiligen Modellanbieter übertragen.
+
+## Fehlerbehebung: OpenRouter
+
+- **401 „Missing Authentication header“:** Prüfen, ob **Extern mit OpenRouter** ausgewählt ist und das Schlüsselfeld den vollständigen API-Schlüssel enthält. Den Schlüssel ohne `Bearer` neu einfügen.
+- **401 „User not found“:** Den Schlüssel unabhängig von der App prüfen. Im macOS-Terminal fragt dieser Befehl den Schlüssel verdeckt ab und ruft OpenRouters Schlüsselstatus-Endpunkt auf; der Schlüssel wird nicht als Teil des Befehls in der Shell-History gespeichert:
+
+  ```zsh
+  read -s "OR_KEY?OpenRouter-Schlüssel: "
+  echo
+  curl -sS https://openrouter.ai/api/v1/key \
+    -H "Authorization: Bearer $OR_KEY"
+  unset OR_KEY
+  ```
+
+  Eine JSON-Antwort mit Kontoinformationen bestätigt, dass OpenRouter den Schlüssel akzeptiert. Kommt dort ebenfalls ein 401 zurück, den OpenRouter-Status prüfen oder den Support kontaktieren. Ist der Schlüssel dort gültig, PolitikCheck vollständig beenden, erneut öffnen und denselben vollständigen Schlüssel erneut in der aktuellen App-Version eintragen.
+- **Andere OpenRouter-Fehler:** PolitikCheck zeigt die HTTP-Nummer und – sofern OpenRouter sie liefert – die Fehlermeldung direkt im OpenRouter-Bereich an. Kostenlose Modelle sind kontingentiert und können zeitweise nicht verfügbar sein. Den [OpenRouter-Status](https://status.openrouter.ai/) und die [Limits kostenloser Modelle](https://openrouter.ai/collections/free-models) prüfen.
+
+API-Schlüssel niemals in öffentliche Issues, Screenshots oder Chats kopieren. Der macOS-Schlüssel wird im Schlüsselbund gespeichert.
 
 ## macOS: Installation und erster Start
 
@@ -43,6 +61,8 @@ Mit Xcode Command Line Tools (`xcode-select --install`):
 ./build.sh
 open "build/PolitikCheck.app"
 ```
+
+Der macOS-Build enthält eine Statusanzeige für externe Anfragen sowie verständlichere Meldungen für OpenRouter-Fehler. Die App-Version steht in `Info.plist`.
 
 ## Firefox-Helfer für Facebook
 
