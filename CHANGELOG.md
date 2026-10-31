@@ -1,5 +1,14 @@
 # Änderungsprotokoll
 
+## 1.7 – 31. Oktober 2026
+
+- Hauptfenster wird nach dem App-Start und bei erneutem Klick auf das Dock-Symbol aktiv nach vorn geholt.
+
+## 1.6 – 31. Oktober 2026
+
+- Schlüssel aus dem macOS-Schlüsselbund werden erst nach dem ersten Fensteraufbau und im Hintergrund geladen. Eine macOS-Freigabeabfrage soll dadurch nicht mehr den Start der Oberfläche blockieren.
+- Browser-Kommentare, die während des Ladens der Schlüssel übergeben werden, bleiben vorgemerkt und werden nach erfolgreichem Laden verarbeitet.
+
 ## 1.5 – 31. Oktober 2026
 
 - Gemini erhält mehr Ausgabetoken und nutzt `thinkingLevel: low`, damit interne Denk-Tokens kurze Antworten nicht abschneiden.

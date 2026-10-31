@@ -14,7 +14,9 @@ final class CheckModel: ObservableObject {
     """
     @Published var comment = ""
     @Published var answer = ""
-    @Published var status = "Verbinde mit lokalem KI-Dienst …"
+    @Published var status = "PolitikCheck wird gestartet …"
+    @Published private(set) var credentialsLoaded = false
+    @Published private(set) var credentialsLoading = false
     @Published var isWorking = false
     @Published var serverReady = false
     @Published var modelReady = false
@@ -47,11 +49,11 @@ final class CheckModel: ObservableObject {
             }
         }
     }
-    @Published var openRouterKey = OpenRouterKeychain.load() ?? "" {
-        didSet { OpenRouterKeychain.save(openRouterKey) }
+    @Published var openRouterKey = "" {
+        didSet { if credentialsLoaded { OpenRouterKeychain.save(openRouterKey) } }
     }
-    @Published var geminiKey = GeminiKeychain.load() ?? "" {
-        didSet { GeminiKeychain.save(geminiKey) }
+    @Published var geminiKey = "" {
+        didSet { if credentialsLoaded { GeminiKeychain.save(geminiKey) } }
     }
     @Published var geminiModel = UserDefaults.standard.string(forKey: "geminiModel") ?? "gemini-3.8-flash" {
         didSet { UserDefaults.standard.set(geminiModel, forKey: "geminiModel") }
@@ -67,13 +69,41 @@ final class CheckModel: ObservableObject {
     private var generationTask: URLSessionDataTask?
     var activeProviderReady: Bool {
         switch provider {
-        case "openrouter": return !openRouterKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        case "gemini": return !geminiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        case "openrouter": return credentialsLoaded && !openRouterKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        case "gemini": return credentialsLoaded && !geminiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         default: return modelReady
         }
     }
 
     init() { checkConnection() }
+
+    func loadCredentials() {
+        guard !credentialsLoaded, !credentialsLoading else { return }
+        credentialsLoading = true
+        // Keychain access can trigger a macOS permission dialog. Keep SecItemCopyMatching
+        // off the main thread so the first app window can appear before that prompt.
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            let openRouter = OpenRouterKeychain.load() ?? ""
+            let gemini = GeminiKeychain.load() ?? ""
+            DispatchQueue.main.async {
+                guard let self else { return }
+                self.openRouterKey = openRouter
+                self.geminiKey = gemini
+                self.credentialsLoaded = true
+                self.credentialsLoading = false
+                if self.provider == "openrouter" || self.provider == "gemini" {
+                    let key = self.provider == "gemini" ? gemini : openRouter
+                    self.status = key.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                        ? "Bitte \(self.provider == "gemini" ? "Gemini" : "OpenRouter")-API-Schlüssel eintragen."
+                        : "\(self.provider == "gemini" ? "Gemini" : "OpenRouter") ausgewählt. Kommentar wird extern verarbeitet."
+                    if self.pendingAutoGenerate {
+                        self.pendingAutoGenerate = false
+                        if self.activeProviderReady { self.generate() }
+                    }
+                }
+            }
+        }
+    }
 
     func openOllamaDownload() {
         NSWorkspace.shared.open(URL(string: "https://ollama.com/download/mac")!)
@@ -282,7 +312,10 @@ final class CheckModel: ObservableObject {
         isWorking = false
         pendingAutoGenerate = true
         status = "Facebook-Kommentar übernommen. Bereite lokale Prüfung vor …"
-        if activeProviderReady {
+        if (provider == "openrouter" || provider == "gemini") && !credentialsLoaded {
+            pendingAutoGenerate = true
+            status = "Kommentar übernommen. Lade API-Schlüssel aus dem Schlüsselbund …"
+        } else if activeProviderReady {
             pendingAutoGenerate = false
             generate()
         } else if provider == "openrouter" || provider == "gemini" {
@@ -337,6 +370,7 @@ struct ContentView: View {
                             .font(.callout).foregroundStyle(.secondary)
                         HStack {
                             SecureField("OpenRouter API-Schlüssel", text: $model.openRouterKey)
+                                .disabled(!model.credentialsLoaded)
                             Button("API-Schlüssel erstellen") { model.openOpenRouterKeys() }
                         }
                         Text("Externer Prompt (wird lokal gespeichert)").font(.caption).foregroundStyle(.secondary)
@@ -361,6 +395,7 @@ struct ContentView: View {
                             .textFieldStyle(.roundedBorder)
                         HStack {
                             SecureField("Gemini API-Schlüssel", text: $model.geminiKey)
+                                .disabled(!model.credentialsLoaded)
                             Button("API-Schlüssel erstellen") { model.openGeminiKeys() }
                         }
                         Text("Externer Prompt (wird lokal gespeichert)").font(.caption).foregroundStyle(.secondary)
@@ -433,13 +468,20 @@ struct ContentView: View {
             Text("Je nach Auswahl läuft die Textgenerierung lokal oder extern über OpenRouter beziehungsweise Google Gemini. Kommentare werden beim gewählten externen Anbieter verarbeitet. Keine Live-Websuche; aktuelle Behauptungen vor dem Veröffentlichen anhand verlässlicher Quellen prüfen.")
                 .font(.caption2).foregroundStyle(.secondary)
             HStack {
-                Text("PolitikCheck v1.5").font(.caption2).foregroundStyle(.secondary)
+                Text("PolitikCheck v1.7").font(.caption2).foregroundStyle(.secondary)
                 Spacer()
                 Link("Hilfe und Projekt auf GitHub", destination: URL(string: "https://github.com/StefanRudat/PolitikCheck#fehlerbehebung-gemini")!)
                     .font(.caption2)
             }
         }
         .padding(20).frame(minWidth: 620, minHeight: 940)
+        .onAppear {
+            model.loadCredentials()
+            NSApplication.shared.activate(ignoringOtherApps: true)
+            DispatchQueue.main.async {
+                NSApplication.shared.windows.first(where: { $0.title == "PolitikCheck" })?.makeKeyAndOrderFront(nil)
+            }
+        }
         .onOpenURL { model.receiveBrowserComment(from: $0) }
         .handlesExternalEvents(preferring: ["politikcheck://check"], allowing: ["politikcheck://check"])
     }
@@ -497,8 +539,34 @@ private enum GeminiKeychain {
 
 @main
 struct PolitikCheckApp: App {
+    @NSApplicationDelegateAdaptor(PolitikCheckAppDelegate.self) private var appDelegate
+
     var body: some Scene {
         WindowGroup("PolitikCheck") { ContentView() }
             .handlesExternalEvents(matching: ["politikcheck://check"])
+    }
+}
+
+@MainActor
+private final class PolitikCheckAppDelegate: NSObject, NSApplicationDelegate {
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        bringMainWindowForward(retriesRemaining: 8)
+    }
+
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool {
+        bringMainWindowForward(retriesRemaining: 8)
+        return true
+    }
+
+    private func bringMainWindowForward(retriesRemaining: Int) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+            NSApplication.shared.activate(ignoringOtherApps: true)
+            if let window = NSApplication.shared.windows.first(where: { $0.title == "PolitikCheck" }) {
+                if window.isMiniaturized { window.deminiaturize(nil) }
+                window.makeKeyAndOrderFront(nil)
+            } else if retriesRemaining > 0 {
+                self.bringMainWindowForward(retriesRemaining: retriesRemaining - 1)
+            }
+        }
     }
 }

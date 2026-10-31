@@ -24,6 +24,8 @@ Antwortlänge (0–100), KI-Quelle und Prompts lassen sich in der App einstellen
 2. In PolitikCheck **Google Gemini (extern)** auswählen und den Schlüssel ohne Anführungszeichen in das Gemini-Feld eintragen.
 3. In der macOS-App die gewünschte Modell-ID eintragen. Standard ist `gemini-3.8-flash`; `gemini-3.6-flash` ist ebenfalls verfügbar, indem die Modell-ID geändert wird. Der externe Prompt lässt sich direkt darunter bearbeiten. Die Antwort wird automatisch in die Zwischenablage kopiert.
 
+Die macOS-App 1.6 zeigt ihr Fenster, bevor sie gespeicherte API-Schlüssel im Schlüsselbund abfragt. Version 1.7 holt das Hauptfenster beim Start und bei einem Klick auf das Dock-Symbol aktiv nach vorn. Falls macOS beim ersten Start eine Freigabe anfordert, diese im Dialog bestätigen; die Schlüssel werden danach im Hintergrund geladen.
+
 Für API-Clients, die Nutzern im EWR, in der Schweiz oder im Vereinigten Königreich bereitgestellt werden, verlangen Googles aktuelle Bedingungen ein aktives Cloud-Abrechnungskonto. Das Aktivieren der Abrechnung kann Kosten ermöglichen; die konkrete Nutzung und Preise richten sich nach Googles Kontingenten und Preisseite. Unbezahlte Gemini-Nutzung hat zusätzlich eigene Datenregeln. Details stehen in den [Gemini-API-Bedingungen](https://ai.google.dev/gemini-api/terms) und der [Preisdokumentation](https://ai.google.dev/gemini-api/docs/pricing).
 
 ### Fehlerbehebung: Gemini
