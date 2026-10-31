@@ -1,6 +1,6 @@
 # PolitikCheck
 
-PolitikCheck ist eine quelloffene Anwendung, die kurze, sachliche Gegendarstellungen zu politischen Kommentaren unterstützt. Als KI-Quelle lässt sich entweder die lokale Ollama-Installation mit Gemma 3 4B oder OpenRouter auswählen. Lokal ist kein API-Schlüssel nötig; OpenRouter benötigt einen persönlichen API-Schlüssel.
+PolitikCheck ist eine quelloffene Anwendung, die kurze, sachliche Gegendarstellungen zu politischen Kommentaren unterstützt. Als KI-Quelle lassen sich die lokale Ollama-Installation mit Gemma 3 4B, OpenRouter oder die Gemini API auswählen. Für die beiden externen Anbieter ist jeweils ein persönlicher API-Schlüssel erforderlich.
 
 PolitikCheck soll einen respektvollen und faktenorientierten Austausch fördern. Der Anspruch ist, politische Argumente unabhängig von Partei oder Richtung nach denselben Maßstäben zu beurteilen. Als inhaltliche und ethische Orientierung dienen die Grundrechte und rechtsstaatlichen Prinzipien des Grundgesetzes für die Bundesrepublik Deutschland vom 23. Mai 1949 sowie die freiheitlich-demokratische Grundordnung.
 
@@ -12,11 +12,24 @@ Die Anwendung hat keinen Zugriff auf eine Live-Websuche. KI-Antworten können Fe
 - **Windows:** WinForms-App für .NET 10, Quellcode und Anleitung unter [`windows`](windows/) und [`INSTALLATION_WINDOWS.md`](INSTALLATION_WINDOWS.md). Die Windows-Version ist noch nicht auf Windows überprüft.
 - **Linux:** Python-App mit Tkinter, Anleitung unter [`linux/README.md`](linux/README.md). Die Linux-Version ist noch nicht auf Linux überprüft.
 
-In der App kann zwischen lokaler Verarbeitung mit Ollama und externer Verarbeitung über OpenRouter umgeschaltet werden. Bei OpenRouter ist standardmäßig `openrouter/free` eingestellt. OpenRouter bietet kostenlose Modelle mit wechselnder Verfügbarkeit und begrenztem Kontingent; kostenlose Nutzung ist nicht garantiert. Die aktuell dokumentierte Grenze für kostenlose Modelle beträgt 50 Anfragen pro Tag und 20 pro Minute. Kostenpflichtige Modell-IDs werden von der App nicht automatisch ausgewählt.
+In der App kann zwischen lokaler Verarbeitung mit Ollama, OpenRouter und Google Gemini umgeschaltet werden. Bei OpenRouter ist standardmäßig `openrouter/free` eingestellt. OpenRouter bietet kostenlose Modelle mit wechselnder Verfügbarkeit und begrenztem Kontingent; kostenlose Nutzung ist nicht garantiert. Die aktuell dokumentierte Grenze für kostenlose Modelle beträgt 50 Anfragen pro Tag und 20 pro Minute. Kostenpflichtige Modell-IDs werden von der App nicht automatisch ausgewählt. Gemini verwendet standardmäßig `gemini-3.6-flash`; Kontingente, Preise und Modellverfügbarkeit können sich ändern.
 
-Bei externer Verarbeitung wird der eingegebene Kommentar an OpenRouter und den von OpenRouter ausgewählten Modellanbieter gesendet. Deren Datenverarbeitung ist je nach Anbieter unterschiedlich. Keine vertraulichen oder personenbezogenen Inhalte eingeben, wenn diese nicht weitergegeben werden sollen. OpenRouter verwendet Eingaben laut eigener Datenschutzerklärung nicht zum Trainieren eigener Modelle; der jeweilige Modellanbieter hat jedoch eigene Bedingungen.
+Bei OpenRouter werden Kommentar und Prompt an OpenRouter und den ausgewählten Modellanbieter gesendet. Bei Gemini gehen Kommentar und Prompt direkt an Google. Anbieterbedingungen und Datenverarbeitung unterscheiden sich; keine vertraulichen oder personenbezogenen Inhalte eingeben, wenn diese nicht weitergegeben werden sollen. Googles Bedingungen verlangen für Gemini-API-Clients, die Nutzern im Europäischen Wirtschaftsraum, in der Schweiz oder im Vereinigten Königreich bereitgestellt werden, ein Projekt mit aktiver Cloud-Abrechnung. Bei unbezahlter Nutzung können Eingaben außerhalb der für EWR-Nutzer geltenden Paid-Service-Datenregeln zur Verbesserung von Google-Produkten verwendet und von Menschen geprüft werden. Vor der Nutzung die [Gemini-API-Bedingungen](https://ai.google.dev/gemini-api/terms) prüfen.
 
-Antwortlänge (0–100), KI-Quelle und Prompts lassen sich in der App einstellen. Der externe Prompt ist mit dem vom Projekt bereitgestellten Counter-Speech-Prompt vorausgefüllt und veränderbar. Der OpenRouter-Schlüssel wird auf macOS im Schlüsselbund und unter Windows mit Windows DPAPI geschützt; Linux speichert ihn in der nur für den aktuellen Benutzer lesbaren Konfigurationsdatei.
+Antwortlänge (0–100), KI-Quelle und Prompts lassen sich in der App einstellen. Der externe Prompt ist mit dem vom Projekt bereitgestellten Counter-Speech-Prompt vorausgefüllt und veränderbar. Gemini- und OpenRouter-Schlüssel werden getrennt gespeichert. Die Schlüsselablage erfolgt auf macOS im Schlüsselbund, unter Windows mit Windows DPAPI geschützt und unter Linux in der nur für den aktuellen Benutzer lesbaren Konfigurationsdatei.
+
+## Gemini einrichten
+
+1. Unter [Google AI Studio – API-Schlüssel](https://aistudio.google.com/api-keys) einen Gemini-API-Schlüssel erstellen.
+2. In PolitikCheck **Google Gemini (extern)** auswählen und den Schlüssel ohne Anführungszeichen in das Gemini-Feld eintragen.
+3. Der externe Prompt lässt sich direkt darunter bearbeiten. Die Antwort wird über `gemini-3.6-flash` erzeugt und wie bei den anderen Quellen automatisch in die Zwischenablage kopiert.
+
+Für API-Clients, die Nutzern im EWR, in der Schweiz oder im Vereinigten Königreich bereitgestellt werden, verlangen Googles aktuelle Bedingungen ein aktives Cloud-Abrechnungskonto. Das Aktivieren der Abrechnung kann Kosten ermöglichen; die konkrete Nutzung und Preise richten sich nach Googles Kontingenten und Preisseite. Unbezahlte Gemini-Nutzung hat zusätzlich eigene Datenregeln. Details stehen in den [Gemini-API-Bedingungen](https://ai.google.dev/gemini-api/terms) und der [Preisdokumentation](https://ai.google.dev/gemini-api/docs/pricing).
+
+### Fehlerbehebung: Gemini
+
+- **503 `UNAVAILABLE` / „currently experiencing high demand“:** Google meldet vorübergehende hohe Auslastung. Später erneut versuchen. Diese Antwort weist nicht auf einen ungültigen Schlüssel hin.
+- **401 oder 403:** Schlüssel und Projektberechtigungen in Google AI Studio prüfen. Den API-Schlüssel nicht in Issues, Screenshots oder Chats veröffentlichen.
 
 ## OpenRouter einrichten
 
@@ -51,7 +64,7 @@ API-Schlüssel niemals in öffentliche Issues, Screenshots oder Chats kopieren. 
 
 Die vorgebaute Mac-App gibt es unter [Releases](https://github.com/StefanRudat/PolitikCheck/releases/latest) als ZIP. Der Download ist für Apple-Silicon-Macs (ARM64) gebaut und nicht von Apple notarisiert.
 
-Für externe Nutzung ist Ollama nicht erforderlich, aber ein OpenRouter-Schlüssel und eine Internetverbindung werden benötigt. Für lokale Nutzung Ollama starten, PolitikCheck öffnen und **Status prüfen** wählen. Sobald Ollama erreichbar ist, in der App **Modell herunterladen** klicken. Das Modell bleibt danach lokal verfügbar.
+Für externe Nutzung ist Ollama nicht erforderlich. OpenRouter oder Gemini benötigen jeweils einen eigenen API-Schlüssel und eine Internetverbindung. Für lokale Nutzung Ollama starten, PolitikCheck öffnen und **Status prüfen** wählen. Sobald Ollama erreichbar ist, in der App **Modell herunterladen** klicken. Das Modell bleibt danach lokal verfügbar.
 
 ## macOS: Bauen
 
@@ -66,7 +79,7 @@ Der macOS-Build enthält eine Statusanzeige für externe Anfragen sowie verstän
 
 ## Firefox-Helfer für Facebook
 
-Die Erweiterung im Ordner [`firefox-helper`](firefox-helper/README.md) übernimmt nur ausdrücklich markierte Facebook-Kommentare. Sie liest keine Timeline. Die Übergabe erfolgt über `politikcheck://`; die Antwortgenerierung läuft je nach Auswahl lokal oder über OpenRouter. Hinweise stehen unter [Fehlerbehebung](firefox-helper/README.md#fehlerbehebung).
+Die Erweiterung im Ordner [`firefox-helper`](firefox-helper/README.md) übernimmt nur ausdrücklich markierte Facebook-Kommentare. Sie liest keine Timeline. Die Übergabe erfolgt über `politikcheck://`; die Antwortgenerierung läuft je nach Auswahl lokal oder über einen externen Anbieter. Hinweise stehen unter [Fehlerbehebung](firefox-helper/README.md#fehlerbehebung).
 
 ## Technische Übergabe
 

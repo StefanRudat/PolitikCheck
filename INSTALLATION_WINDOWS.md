@@ -20,7 +20,7 @@ Die Windows-Version und diese Installationsschritte wurden vom Projektteam noch 
    ollama pull gemma3:4b
    ```
 
-   Der erste Download benötigt eine Internetverbindung. Danach bleibt das Modell lokal gespeichert. Ollama stellt der App die lokale API unter `http://127.0.0.1:11434` bereit. Für ausschließliche OpenRouter-Nutzung kannst du diesen Schritt überspringen.
+   Der erste Download benötigt eine Internetverbindung. Danach bleibt das Modell lokal gespeichert. Ollama stellt der App die lokale API unter `http://127.0.0.1:11434` bereit. Für ausschließliche OpenRouter- oder Gemini-Nutzung kannst du diesen Schritt überspringen.
 
 ## 2. PolitikCheck herunterladen und bauen
 
@@ -53,7 +53,7 @@ Die Windows-Version und diese Installationsschritte wurden vom Projektteam noch 
 2. PolitikCheck über das Startmenü starten. Falls Ollama bereits läuft und das Modell vorhanden ist, zeigt die App den Status **Bereit**.
 3. Kommentar einfügen und **Gegendarstellung erstellen** wählen. Die Antwort wird automatisch in die Zwischenablage kopiert. Im Facebook-Antwortfeld mit Rechtsklick **Einfügen** wählen.
 
-Im Auswahlfeld **KI-Quelle** wechselst du zwischen der lokalen Ollama-KI und OpenRouter. Für OpenRouter wird ein eigener API-Schlüssel benötigt; erstelle ihn über den Link in der App. Standardmäßig ist `openrouter/free` ausgewählt. Die Verfügbarkeit kostenloser Modelle und die Limits können sich ändern. Der Schlüssel wird mit Windows DPAPI für dein Windows-Benutzerkonto verschlüsselt in `%APPDATA%\PolitikCheck\settings.json` abgelegt. Antwortlänge und beide Prompts werden ebenfalls dort gespeichert. Der externe Prompt ist mit einem Counter-Speech-Prompt vorausgefüllt und lässt sich bearbeiten.
+Im Auswahlfeld **KI-Quelle** wechselst du zwischen Ollama, OpenRouter und Google Gemini. Für beide externen Quellen wird ein eigener API-Schlüssel benötigt; erstelle ihn über den jeweiligen Link in der App. OpenRouter verwendet standardmäßig `openrouter/free`, Gemini verwendet `gemini-3.6-flash`. Verfügbarkeit und Kontingente können sich ändern. Für Gemini-API-Clients, die Nutzern im EWR, in der Schweiz oder im Vereinigten Königreich bereitgestellt werden, verlangen Googles Bedingungen ein aktives Cloud-Abrechnungskonto. Die Schlüssel werden mit Windows DPAPI für dein Windows-Benutzerkonto verschlüsselt in `%APPDATA%\PolitikCheck\settings.json` gespeichert. Antwortlänge und Prompts werden ebenfalls dort abgelegt. Der externe Prompt ist mit einem Counter-Speech-Prompt vorausgefüllt und lässt sich bearbeiten.
 
 ## Firefox-Helfer optional einrichten
 
@@ -67,4 +67,4 @@ Im Ordner `windows` das Skript `Uninstall.ps1` ausführen. Es entfernt die App, 
 
 ## Datenschutz und Grenzen
 
-Bei lokaler Auswahl sendet die App den Kommentar an Ollama auf demselben PC. Bei OpenRouter-Auswahl werden Kommentar und Prompt an OpenRouter und den jeweils verwendeten Modellanbieter übertragen. Prüfe deren aktuelle Datenschutz- und Nutzungsbedingungen und verwende keine vertraulichen Inhalte. Die App hat keine Live-Websuche. Aktuelle Tatsachenbehauptungen müssen vor dem Veröffentlichen anhand verlässlicher Quellen geprüft werden. Das Modell kann Fehler machen.
+Bei lokaler Auswahl sendet die App den Kommentar an Ollama auf demselben PC. Bei externer Auswahl gehen Kommentar und Prompt an OpenRouter beziehungsweise Google Gemini. Prüfe die aktuellen Datenschutz- und Nutzungsbedingungen und verwende keine vertraulichen Inhalte. Googles Bedingungen sehen für unbezahlte Nutzung besondere Datenregeln vor; für EWR-Nutzer gelten die Paid-Service-Datenregeln, aber API-Clients für diese Nutzer benötigen trotzdem ein Projekt mit aktiver Cloud-Abrechnung. Die App hat keine Live-Websuche. Aktuelle Tatsachenbehauptungen müssen vor dem Veröffentlichen anhand verlässlicher Quellen geprüft werden. Das Modell kann Fehler machen.

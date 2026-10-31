@@ -25,7 +25,7 @@ Die Linux-Version wurde vom Projektteam noch nicht auf einem Linux-System instal
    ollama pull gemma3:4b
    ```
 
-   Wenn du OpenRouter verwenden möchtest, kannst du diesen Schritt überspringen und stattdessen in der App den API-Schlüssel eintragen.
+   Wenn du OpenRouter oder Gemini verwenden möchtest, kannst du diesen Schritt überspringen und stattdessen den passenden API-Schlüssel in der App eintragen.
 
 3. PolitikCheck installieren:
 
@@ -37,11 +37,11 @@ Die Linux-Version wurde vom Projektteam noch nicht auf einem Linux-System instal
 
 4. PolitikCheck im Anwendungsmenü öffnen. Kommentare können eingefügt oder auf Facebook markiert und über den Firefox-Helfer übergeben werden. Antworten werden automatisch in die Zwischenablage kopiert.
 
-Über **KI-Quelle** wechselst du zwischen Ollama lokal und OpenRouter extern. OpenRouter braucht einen API-Schlüssel; du kannst ihn über den Link in der App erstellen. Voreingestellt ist `openrouter/free`. Kostenlose Modelle haben Limits und können wechseln oder zeitweise ausfallen; aktuell nennt OpenRouter 50 kostenlose Anfragen pro Tag und 20 pro Minute.
+Über **KI-Quelle** wechselst du zwischen Ollama lokal, OpenRouter und Google Gemini. OpenRouter braucht einen eigenen Schlüssel; voreingestellt ist `openrouter/free`. Kostenlose Modelle haben Limits und können wechseln oder zeitweise ausfallen. Gemini nutzt `gemini-3.6-flash`; der eigene Gemini-Schlüssel lässt sich über den Link in der App erstellen. Für Gemini-API-Clients, die Nutzern im EWR, in der Schweiz oder im Vereinigten Königreich bereitgestellt werden, verlangen Googles Bedingungen ein Projekt mit aktiver Cloud-Abrechnung. Kontingente und Preise können sich ändern.
 
-Der externe Prompt ist mit dem Projekt-Prompt für demokratische Gegenrede vorausgefüllt und lässt sich ändern. Antwortlänge, Quelle, Prompts und Schlüssel werden unter `~/.config/politikcheck/settings.json` gespeichert (oder unter dem Pfad aus `XDG_CONFIG_HOME`). Die Datei wird mit Dateirechten 0600 angelegt und ist damit nur für den aktuellen Benutzer lesbar. Der API-Schlüssel ist dort nicht verschlüsselt.
+Der externe Prompt ist mit dem Projekt-Prompt für demokratische Gegenrede vorausgefüllt und lässt sich ändern. Antwortlänge, Quelle, Prompts und getrennte OpenRouter-/Gemini-Schlüssel werden unter `~/.config/politikcheck/settings.json` gespeichert (oder unter dem Pfad aus `XDG_CONFIG_HOME`). Die Datei wird mit Dateirechten 0600 angelegt und ist damit nur für den aktuellen Benutzer lesbar. Die API-Schlüssel sind dort nicht verschlüsselt.
 
-Bei OpenRouter-Auswahl werden Kommentar und Prompt über OpenRouter an den jeweiligen Modellanbieter übertragen. Prüfe dessen Datenschutzbedingungen und gib keine vertraulichen Inhalte ein. Bei lokaler Auswahl wird der Kommentar an Ollama auf demselben PC gesendet.
+Bei OpenRouter-Auswahl werden Kommentar und Prompt über OpenRouter an den jeweiligen Modellanbieter übertragen. Bei Gemini-Auswahl gehen beide direkt an Google. Prüfe die Datenschutz- und Nutzungsbedingungen des Anbieters und gib keine vertraulichen Inhalte ein. Googles EWR-Bedingungen verlangen für bereitgestellte API-Clients ein Projekt mit aktiver Cloud-Abrechnung. Bei lokaler Auswahl wird der Kommentar an Ollama auf demselben PC gesendet.
 
 ## Deinstallation
 
