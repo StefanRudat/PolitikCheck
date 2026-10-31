@@ -28,7 +28,7 @@ Alle drei Oberflächen bieten einen Antwortlängen-Regler (0–100), einen Provi
 
 ### macOS / OpenRouter
 
-Die macOS-App unterstützt OpenRouter über `https://openrouter.ai/api/v1/chat/completions` und verwendet standardmäßig `openrouter/free`. Der Schlüssel wird im macOS-Schlüsselbund gespeichert. Die OpenRouter-Ansicht zeigt während und nach einer Anfrage den Status sowie HTTP-Fehlermeldungen an; verschachtelte OpenRouter-Fehlerobjekte werden ausgelesen. Der veröffentlichte macOS-Build trägt Version 1.2. Der aktuelle Arbeitsstand hat Version 1.3 in `Info.plist` und ergänzt Gemini; diese Änderungen sind noch nicht in einem GitHub-Release.
+Die macOS-App unterstützt OpenRouter über `https://openrouter.ai/api/v1/chat/completions` und verwendet standardmäßig `openrouter/free`. Der Schlüssel wird im macOS-Schlüsselbund gespeichert. Die OpenRouter-Ansicht zeigt während und nach einer Anfrage den Status sowie HTTP-Fehlermeldungen an; verschachtelte OpenRouter-Fehlerobjekte werden ausgelesen. Der macOS-Build Version 1.3 wurde am 31.10.2026 als GitHub-Release `v1.3` veröffentlicht; das ZIP enthält einen ARM64-Build, der nicht von Apple notarisiert ist.
 
 Beim Supportfall mit HTTP 401 „User not found“ bestätigte `GET https://openrouter.ai/api/v1/key` für den vom Nutzer verwendeten Schlüssel ein gültiges Konto und Freikontingent. Wenn das in der App weiter auftritt, den neuesten Build öffnen, den Schlüssel vollständig und ohne `Bearer` erneut eintragen und verifizieren, dass Keychain-Wert und API-Key identisch sind. Niemals den vollständigen Schlüssel in Logs, GitHub oder Chatverläufe aufnehmen.
 
