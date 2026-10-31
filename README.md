@@ -29,6 +29,7 @@ Für API-Clients, die Nutzern im EWR, in der Schweiz oder im Vereinigten Königr
 ### Fehlerbehebung: Gemini
 
 - **503 `UNAVAILABLE` / „currently experiencing high demand“:** Google meldet, dass der Dienst vorübergehend überlastet oder nicht verfügbar ist. Später erneut versuchen. Das ist kein Beleg für einen ungültigen Schlüssel oder einen falschen Modellnamen. In der macOS-App kann die Modell-ID auf `gemini-3.8-flash` oder `gemini-3.6-flash` geändert werden. Ein Modellwechsel kann bei modellbezogener Auslastung helfen, garantiert aber keine Verfügbarkeit.
+- **Antwort endet mitten im Satz:** Gemini zählt interne Denk-Tokens zum `maxOutputTokens`-Limit. PolitikCheck 1.5 setzt ein größeres Limit und `thinkingLevel: low`. Falls Google dennoch `MAX_TOKENS` meldet, zeigt die App einen Warnhinweis und kopiert den unvollständigen Text nicht automatisch.
 - **401 oder 403:** Schlüssel und Projektberechtigungen in Google AI Studio prüfen. Den API-Schlüssel nicht in Issues, Screenshots oder Chats veröffentlichen.
 
 ## OpenRouter einrichten
@@ -75,7 +76,7 @@ Mit Xcode Command Line Tools (`xcode-select --install`):
 open "build/PolitikCheck.app"
 ```
 
-Der macOS-Build enthält eine Statusanzeige für externe Anfragen sowie verständlichere Meldungen für OpenRouter-Fehler. Die App zeigt `PolitikCheck v1.4` in ihrer Statusleiste und verlinkt dort die GitHub-Hilfe. Der Quellcode und Fehlerbehebungshinweise stehen im [GitHub-Projekt](https://github.com/StefanRudat/PolitikCheck); die App-Version steht in `Info.plist`.
+Der macOS-Build enthält eine Statusanzeige für externe Anfragen sowie verständlichere Meldungen für OpenRouter-Fehler. Die App zeigt ihre Version in der Statusleiste und verlinkt dort die GitHub-Hilfe. Der Quellcode und Fehlerbehebungshinweise stehen im [GitHub-Projekt](https://github.com/StefanRudat/PolitikCheck); die App-Version steht in `Info.plist`.
 
 ## Firefox-Helfer für Facebook
 

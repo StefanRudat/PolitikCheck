@@ -198,7 +198,13 @@ final class CheckModel: ObservableObject {
         let geminiPayload: [String: Any] = [
             "system_instruction": ["parts": [["text": instructions]]],
             "contents": [["role": "user", "parts": [["text": text]]]],
-            "generationConfig": ["temperature": 0.2, "maxOutputTokens": max(80, Int(80 + answerLength * 4))]
+            // Gemini counts internal reasoning tokens toward maxOutputTokens. Keep
+            // the answer budget comfortably above the visible response length.
+            "generationConfig": [
+                "temperature": 0.2,
+                "maxOutputTokens": max(1024, Int(512 + answerLength * 8)),
+                "thinkingConfig": ["thinkingLevel": "low"]
+            ]
         ]
         let payload = useOpenRouter ? externalPayload : useGemini ? geminiPayload : localPayload
         guard let body = try? JSONSerialization.data(withJSONObject: payload) else {
@@ -242,9 +248,16 @@ final class CheckModel: ObservableObject {
                 } else {
                     result = (object["message"] as? [String: Any])?["content"] as? String
                 }
+                let geminiFinishReason = useGemini
+                    ? ((object["candidates"] as? [[String: Any]])?.first?["finishReason"] as? String)
+                    : nil
                 guard let result else { self.status = "Antwortformat nicht erkannt."; return }
                 self.answer = result.trimmingCharacters(in: .whitespacesAndNewlines)
                 guard !self.answer.isEmpty else { self.status = "Keine Textantwort erhalten."; return }
+                if geminiFinishReason == "MAX_TOKENS" {
+                    self.status = "Gemini hat das Ausgabelimit erreicht. Die Antwort ist möglicherweise unvollständig und wurde nicht automatisch kopiert. Bitte erneut versuchen."
+                    return
+                }
                 NSPasteboard.general.clearContents()
                 let copied = NSPasteboard.general.setString(self.answer, forType: .string)
                 self.status = copied
@@ -420,7 +433,7 @@ struct ContentView: View {
             Text("Je nach Auswahl läuft die Textgenerierung lokal oder extern über OpenRouter beziehungsweise Google Gemini. Kommentare werden beim gewählten externen Anbieter verarbeitet. Keine Live-Websuche; aktuelle Behauptungen vor dem Veröffentlichen anhand verlässlicher Quellen prüfen.")
                 .font(.caption2).foregroundStyle(.secondary)
             HStack {
-                Text("PolitikCheck v1.4").font(.caption2).foregroundStyle(.secondary)
+                Text("PolitikCheck v1.5").font(.caption2).foregroundStyle(.secondary)
                 Spacer()
                 Link("Hilfe und Projekt auf GitHub", destination: URL(string: "https://github.com/StefanRudat/PolitikCheck#fehlerbehebung-gemini")!)
                     .font(.caption2)

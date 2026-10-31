@@ -1,5 +1,10 @@
 # Änderungsprotokoll
 
+## 1.5 – 31. Oktober 2026
+
+- Gemini erhält mehr Ausgabetoken und nutzt `thinkingLevel: low`, damit interne Denk-Tokens kurze Antworten nicht abschneiden.
+- `MAX_TOKENS` wird erkannt; unvollständige Gemini-Antworten werden nicht mehr als fertig in die Zwischenablage kopiert.
+
 ## 1.4 – 31. Oktober 2026
 
 - Gemini-Modell-ID in der macOS-App konfigurierbar; Standard auf `gemini-3.8-flash` aktualisiert.
