@@ -53,6 +53,9 @@ final class CheckModel: ObservableObject {
     @Published var geminiKey = GeminiKeychain.load() ?? "" {
         didSet { GeminiKeychain.save(geminiKey) }
     }
+    @Published var geminiModel = UserDefaults.standard.string(forKey: "geminiModel") ?? "gemini-3.8-flash" {
+        didSet { UserDefaults.standard.set(geminiModel, forKey: "geminiModel") }
+    }
     @Published var externalPrompt = UserDefaults.standard.string(forKey: "openRouterPrompt") ?? CheckModel.externalDefaultPrompt {
         didSet { UserDefaults.standard.set(externalPrompt, forKey: "openRouterPrompt") }
     }
@@ -152,6 +155,9 @@ final class CheckModel: ObservableObject {
         if useGemini && geminiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             status = "Bitte zuerst den Gemini-API-Schlüssel eintragen."; return
         }
+        if useGemini && geminiModel.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            status = "Bitte eine Gemini-Modell-ID eintragen."; return
+        }
         if !isExternal {
             guard serverReady else { status = "Ollama ist nicht erreichbar. Bitte Ollama starten."; return }
             guard modelReady else { status = "Bitte zuerst das lokale Modell herunterladen."; return }
@@ -198,7 +204,8 @@ final class CheckModel: ObservableObject {
         guard let body = try? JSONSerialization.data(withJSONObject: payload) else {
             isWorking = false; status = "Anfrage konnte nicht vorbereitet werden."; return
         }
-        let endpoint = useOpenRouter ? URL(string: "https://openrouter.ai/api/v1/chat/completions")! : useGemini ? URL(string: "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent")! : baseURL.appendingPathComponent("api/chat")
+        let selectedGeminiModel = geminiModel.trimmingCharacters(in: .whitespacesAndNewlines)
+        let endpoint = useOpenRouter ? URL(string: "https://openrouter.ai/api/v1/chat/completions")! : useGemini ? URL(string: "https://generativelanguage.googleapis.com/v1beta/models/\(selectedGeminiModel):generateContent")! : baseURL.appendingPathComponent("api/chat")
         var request = URLRequest(url: endpoint, timeoutInterval: 600)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -335,8 +342,10 @@ struct ContentView: View {
             } else {
                 GroupBox("Google Gemini · externe KI") {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Modell: gemini-3.6-flash. Dein Kommentar und der Prompt werden an Google übertragen. Kontingente und Verfügbarkeit können sich ändern. Für API-Clients, die Nutzern im EWR bereitgestellt werden, verlangt Google laut aktuellen Bedingungen aktive Cloud-Abrechnung. Googles Datenregeln unterscheiden sich nach Region und Kontostufe; Bedingungen vor der Nutzung prüfen.")
+                        Text("Modell-ID frei einstellbar. Vorschläge: gemini-3.8-flash und gemini-3.6-flash. Ein 503 bedeutet meist eine vorübergehende Auslastung oder Nichtverfügbarkeit; ein anderes Modell kann helfen, garantiert es aber nicht. Dein Kommentar und der Prompt werden an Google übertragen. Für API-Clients im EWR verlangt Google aktive Cloud-Abrechnung.")
                             .font(.callout).foregroundStyle(.secondary)
+                        TextField("Gemini-Modell-ID", text: $model.geminiModel)
+                            .textFieldStyle(.roundedBorder)
                         HStack {
                             SecureField("Gemini API-Schlüssel", text: $model.geminiKey)
                             Button("API-Schlüssel erstellen") { model.openGeminiKeys() }
@@ -410,8 +419,14 @@ struct ContentView: View {
             }
             Text("Je nach Auswahl läuft die Textgenerierung lokal oder extern über OpenRouter beziehungsweise Google Gemini. Kommentare werden beim gewählten externen Anbieter verarbeitet. Keine Live-Websuche; aktuelle Behauptungen vor dem Veröffentlichen anhand verlässlicher Quellen prüfen.")
                 .font(.caption2).foregroundStyle(.secondary)
+            HStack {
+                Text("PolitikCheck v1.4").font(.caption2).foregroundStyle(.secondary)
+                Spacer()
+                Link("Hilfe und Projekt auf GitHub", destination: URL(string: "https://github.com/StefanRudat/PolitikCheck#fehlerbehebung-gemini")!)
+                    .font(.caption2)
+            }
         }
-        .padding(20).frame(minWidth: 620, minHeight: 900)
+        .padding(20).frame(minWidth: 620, minHeight: 940)
         .onOpenURL { model.receiveBrowserComment(from: $0) }
         .handlesExternalEvents(preferring: ["politikcheck://check"], allowing: ["politikcheck://check"])
     }

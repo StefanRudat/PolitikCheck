@@ -12,7 +12,7 @@ Die Anwendung hat keinen Zugriff auf eine Live-Websuche. KI-Antworten können Fe
 - **Windows:** WinForms-App für .NET 10, Quellcode und Anleitung unter [`windows`](windows/) und [`INSTALLATION_WINDOWS.md`](INSTALLATION_WINDOWS.md). Die Windows-Version ist noch nicht auf Windows überprüft.
 - **Linux:** Python-App mit Tkinter, Anleitung unter [`linux/README.md`](linux/README.md). Die Linux-Version ist noch nicht auf Linux überprüft.
 
-In der App kann zwischen lokaler Verarbeitung mit Ollama, OpenRouter und Google Gemini umgeschaltet werden. Bei OpenRouter ist standardmäßig `openrouter/free` eingestellt. OpenRouter bietet kostenlose Modelle mit wechselnder Verfügbarkeit und begrenztem Kontingent; kostenlose Nutzung ist nicht garantiert. Die aktuell dokumentierte Grenze für kostenlose Modelle beträgt 50 Anfragen pro Tag und 20 pro Minute. Kostenpflichtige Modell-IDs werden von der App nicht automatisch ausgewählt. Gemini verwendet standardmäßig `gemini-3.6-flash`; Kontingente, Preise und Modellverfügbarkeit können sich ändern.
+In der App kann zwischen lokaler Verarbeitung mit Ollama, OpenRouter und Google Gemini umgeschaltet werden. Bei OpenRouter ist standardmäßig `openrouter/free` eingestellt. OpenRouter bietet kostenlose Modelle mit wechselnder Verfügbarkeit und begrenztem Kontingent; kostenlose Nutzung ist nicht garantiert. Die aktuell dokumentierte Grenze für kostenlose Modelle beträgt 50 Anfragen pro Tag und 20 pro Minute. Kostenpflichtige Modell-IDs werden von der App nicht automatisch ausgewählt. Die macOS-App verwendet standardmäßig `gemini-3.8-flash`; die Modell-ID lässt sich dort ändern, zum Beispiel auf `gemini-3.6-flash`. Kontingente, Preise und Modellverfügbarkeit können sich ändern.
 
 Bei OpenRouter werden Kommentar und Prompt an OpenRouter und den ausgewählten Modellanbieter gesendet. Bei Gemini gehen Kommentar und Prompt direkt an Google. Anbieterbedingungen und Datenverarbeitung unterscheiden sich; keine vertraulichen oder personenbezogenen Inhalte eingeben, wenn diese nicht weitergegeben werden sollen. Googles Bedingungen verlangen für Gemini-API-Clients, die Nutzern im Europäischen Wirtschaftsraum, in der Schweiz oder im Vereinigten Königreich bereitgestellt werden, ein Projekt mit aktiver Cloud-Abrechnung. Bei unbezahlter Nutzung können Eingaben außerhalb der für EWR-Nutzer geltenden Paid-Service-Datenregeln zur Verbesserung von Google-Produkten verwendet und von Menschen geprüft werden. Vor der Nutzung die [Gemini-API-Bedingungen](https://ai.google.dev/gemini-api/terms) prüfen.
 
@@ -22,13 +22,13 @@ Antwortlänge (0–100), KI-Quelle und Prompts lassen sich in der App einstellen
 
 1. Unter [Google AI Studio – API-Schlüssel](https://aistudio.google.com/api-keys) einen Gemini-API-Schlüssel erstellen.
 2. In PolitikCheck **Google Gemini (extern)** auswählen und den Schlüssel ohne Anführungszeichen in das Gemini-Feld eintragen.
-3. Der externe Prompt lässt sich direkt darunter bearbeiten. Die Antwort wird über `gemini-3.6-flash` erzeugt und wie bei den anderen Quellen automatisch in die Zwischenablage kopiert.
+3. In der macOS-App die gewünschte Modell-ID eintragen. Standard ist `gemini-3.8-flash`; `gemini-3.6-flash` ist ebenfalls verfügbar, indem die Modell-ID geändert wird. Der externe Prompt lässt sich direkt darunter bearbeiten. Die Antwort wird automatisch in die Zwischenablage kopiert.
 
 Für API-Clients, die Nutzern im EWR, in der Schweiz oder im Vereinigten Königreich bereitgestellt werden, verlangen Googles aktuelle Bedingungen ein aktives Cloud-Abrechnungskonto. Das Aktivieren der Abrechnung kann Kosten ermöglichen; die konkrete Nutzung und Preise richten sich nach Googles Kontingenten und Preisseite. Unbezahlte Gemini-Nutzung hat zusätzlich eigene Datenregeln. Details stehen in den [Gemini-API-Bedingungen](https://ai.google.dev/gemini-api/terms) und der [Preisdokumentation](https://ai.google.dev/gemini-api/docs/pricing).
 
 ### Fehlerbehebung: Gemini
 
-- **503 `UNAVAILABLE` / „currently experiencing high demand“:** Google meldet vorübergehende hohe Auslastung. Später erneut versuchen. Diese Antwort weist nicht auf einen ungültigen Schlüssel hin.
+- **503 `UNAVAILABLE` / „currently experiencing high demand“:** Google meldet, dass der Dienst vorübergehend überlastet oder nicht verfügbar ist. Später erneut versuchen. Das ist kein Beleg für einen ungültigen Schlüssel oder einen falschen Modellnamen. In der macOS-App kann die Modell-ID auf `gemini-3.8-flash` oder `gemini-3.6-flash` geändert werden. Ein Modellwechsel kann bei modellbezogener Auslastung helfen, garantiert aber keine Verfügbarkeit.
 - **401 oder 403:** Schlüssel und Projektberechtigungen in Google AI Studio prüfen. Den API-Schlüssel nicht in Issues, Screenshots oder Chats veröffentlichen.
 
 ## OpenRouter einrichten
@@ -75,7 +75,7 @@ Mit Xcode Command Line Tools (`xcode-select --install`):
 open "build/PolitikCheck.app"
 ```
 
-Der macOS-Build enthält eine Statusanzeige für externe Anfragen sowie verständlichere Meldungen für OpenRouter-Fehler. Die App-Version steht in `Info.plist`.
+Der macOS-Build enthält eine Statusanzeige für externe Anfragen sowie verständlichere Meldungen für OpenRouter-Fehler. Die App zeigt `PolitikCheck v1.4` in ihrer Statusleiste und verlinkt dort die GitHub-Hilfe. Der Quellcode und Fehlerbehebungshinweise stehen im [GitHub-Projekt](https://github.com/StefanRudat/PolitikCheck); die App-Version steht in `Info.plist`.
 
 ## Firefox-Helfer für Facebook
 
